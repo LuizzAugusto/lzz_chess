@@ -28,7 +28,7 @@ char *allocPiece(char name, char col, char line, char color, char moved) {
         return NULL;
     }
 
-    char piece[6];
+    char *piece = malloc(6);
 
     piece[IDX_COLOR] = color;
     piece[IDX_PIECE_NAME] = name;
@@ -37,9 +37,7 @@ char *allocPiece(char name, char col, char line, char color, char moved) {
     piece[IDX_MOVED] = moved;
     piece[5] = '\0';
 
-    char *dup = malloc(5);
-    memcpy(dup, piece, 5);
-    return dup;
+    return piece;
 }
 
 int youStart(int confirm) {
