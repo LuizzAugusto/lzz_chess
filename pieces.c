@@ -67,29 +67,29 @@ char convertLineIntPosToChar(int pos) {
     return pos + 49;
 }
 
-void startPawns(char *table[8][8], int ustart) {
+void startPawns(char *board[8][8], int ustart) {
     for (int column = 0; column < 8; column++) {
-        table[column][1] = allocPiece(blackOrWhite(!ustart), 'P', convertColumnIntPosToChar(column), convertLineIntPosToChar(1), '0');
-        table[column][6] = allocPiece(blackOrWhite(ustart), 'P', convertColumnIntPosToChar(column), convertLineIntPosToChar(6), '0');
+        board[column][1] = allocPiece(blackOrWhite(!ustart), 'P', convertColumnIntPosToChar(column), convertLineIntPosToChar(1), '0');
+        board[column][6] = allocPiece(blackOrWhite(ustart), 'P', convertColumnIntPosToChar(column), convertLineIntPosToChar(6), '0');
     }
 }
 
-void startPieces(char *table[8][8], char color, int line, int ustart) {
-    startPawns(table, ustart);
+void startPieces(char *board[8][8], char color, int line, int ustart) {
+    startPawns(board, ustart);
 
-    table[0][line] = allocPiece(color, 'R', convertColumnIntPosToChar(0), convertLineIntPosToChar(line), '0');
-    table[1][line] = allocPiece(color, 'N', convertColumnIntPosToChar(1), convertLineIntPosToChar(line), '0');
-    table[2][line] = allocPiece(color, 'B', convertColumnIntPosToChar(2), convertLineIntPosToChar(line), '0');
+    board[0][line] = allocPiece(color, 'R', convertColumnIntPosToChar(0), convertLineIntPosToChar(line), '0');
+    board[1][line] = allocPiece(color, 'N', convertColumnIntPosToChar(1), convertLineIntPosToChar(line), '0');
+    board[2][line] = allocPiece(color, 'B', convertColumnIntPosToChar(2), convertLineIntPosToChar(line), '0');
 
     if (!ustart) {
-        table[3][line] = allocPiece(color, 'K', convertColumnIntPosToChar(3), convertLineIntPosToChar(line), '0');
-        table[4][line] = allocPiece(color, 'Q', convertColumnIntPosToChar(4), convertLineIntPosToChar(line), '0');
+        board[3][line] = allocPiece(color, 'K', convertColumnIntPosToChar(3), convertLineIntPosToChar(line), '0');
+        board[4][line] = allocPiece(color, 'Q', convertColumnIntPosToChar(4), convertLineIntPosToChar(line), '0');
     } else {
-        table[3][line] = allocPiece(color, 'Q', convertColumnIntPosToChar(3), convertLineIntPosToChar(line), '0');
-        table[4][line] = allocPiece(color, 'K', convertColumnIntPosToChar(4), convertLineIntPosToChar(line), '0');
+        board[3][line] = allocPiece(color, 'Q', convertColumnIntPosToChar(3), convertLineIntPosToChar(line), '0');
+        board[4][line] = allocPiece(color, 'K', convertColumnIntPosToChar(4), convertLineIntPosToChar(line), '0');
     }
 
-    table[5][line] = allocPiece(color, 'B', convertColumnIntPosToChar(5), convertLineIntPosToChar(line), '0');
-    table[6][line] = allocPiece(color, 'N', convertColumnIntPosToChar(6), convertLineIntPosToChar(line), '0');
-    table[7][line] = allocPiece(color, 'R', convertColumnIntPosToChar(7), convertLineIntPosToChar(line), '0');
+    board[5][line] = allocPiece(color, 'B', convertColumnIntPosToChar(5), convertLineIntPosToChar(line), '0');
+    board[6][line] = allocPiece(color, 'N', convertColumnIntPosToChar(6), convertLineIntPosToChar(line), '0');
+    board[7][line] = allocPiece(color, 'R', convertColumnIntPosToChar(7), convertLineIntPosToChar(line), '0');
 }

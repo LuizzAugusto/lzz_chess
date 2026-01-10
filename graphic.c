@@ -117,10 +117,10 @@ void drawPiece(char *piece, int line, int col, int square_area) {
 	}
 }
 
-void showPieces(char *table[8][8], int square_area) {
+void showPieces(char *board[8][8], int square_area) {
 	for (int col = 0; col < 8; col++) {
 		for (int line = 0; line < 8; line++) {
-			drawPiece(table[col][line], line, col, square_area);
+			drawPiece(board[col][line], line, col, square_area);
 		}
 	}
 }

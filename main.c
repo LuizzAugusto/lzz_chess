@@ -11,7 +11,7 @@
 
 int main() {
     // Uses 'Pcl' pattern of chess, I add color ('b' and 'w') and moved ('0' or '1') too.
-    char* table[8][8];
+    char* board[8][8];
     int ustart = youStart(-1);
     int square_area = 80;
     Color colorBg = LIGHTGRAY;
@@ -20,7 +20,7 @@ int main() {
 
     for (int line = 2; line < 6; line++) {
         for (int col = 0; col < 8; col++) {
-            table[col][line] = '\0';
+            board[col][line] = '\0';
         }
     }
 
@@ -30,8 +30,8 @@ int main() {
     printf("-----------------------------------------\n");
     printf("ustart: %d\n", ustart);
     printf("-----------------------------------------\n");
-    startPieces(table, adversaryColor, 0, ustart);
-    startPieces(table, myColor, 7, ustart);
+    startPieces(board, adversaryColor, 0, ustart);
+    startPieces(board, myColor, 7, ustart);
     
     InitWindow(square_area * 8, square_area * 8, "Chess");
 
@@ -55,7 +55,7 @@ int main() {
 		ClearBackground(colorBg);
 
         showTable(square_area, colorSquare);
-        showPieces(table, square_area);
+        showPieces(board, square_area);
 
         EndDrawing();
     }
