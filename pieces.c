@@ -2,7 +2,12 @@
 
 // For explanation: it didn't use structs, because I want to save historic
 // in chess-like style and struct will lead for more convertions.
-char *allocPiece(char name, char col, char line, char color, char moved) {
+char *allocPiece(char color, char name, char col, char line, char moved) {
+    if (color != 'b' && color != 'w') {
+        printf("alloc error, trying allocate an unexistent color, use 'b' for black and 'w' for white.\n");
+        return NULL;
+    }
+
     if (name != 'K' && name != 'Q' && name != 'R' && name != 'N' && name != 'B' && name != 'P') {
         printf("alloc error, trying allocate an unexistent piece, use 'K' for King, 'Q' for Queen, 'R' for Rook, 'N' for Knight, 'B' for Bishop and 'P' for Pawn.\n");
         return NULL;
@@ -15,11 +20,6 @@ char *allocPiece(char name, char col, char line, char color, char moved) {
 
     if (line < '1' || line > '8') {
         printf("alloc error, invalid line space, use '1' to '8' only.\n");
-        return NULL;
-    }
-
-    if (color != 'b' && color != 'w') {
-        printf("alloc error, trying allocate an unexistent color, use 'b' for black and 'w' for white.\n");
         return NULL;
     }
 
@@ -67,28 +67,29 @@ char convertLineIntPosToChar(int pos) {
     return pos + 49;
 }
 
-void startPieces(char *table[8][8], int column, int ustart) {
-    table[column][0] = allocPiece('R', convertColumnIntPosToChar(column), convertLineIntPosToChar(0), blackOrWhite(ustart), '0');
-    table[column][1] = allocPiece('N', convertColumnIntPosToChar(column), convertLineIntPosToChar(1), blackOrWhite(ustart), '0');
-    table[column][2] = allocPiece('B', convertColumnIntPosToChar(column), convertLineIntPosToChar(2), blackOrWhite(ustart), '0');
-
-    if (ustart) {
-        table[column][3] = allocPiece('Q', convertColumnIntPosToChar(column), convertLineIntPosToChar(3), blackOrWhite(ustart), '0');
-        table[column][4] = allocPiece('K', convertColumnIntPosToChar(column), convertLineIntPosToChar(4), blackOrWhite(ustart), '0');
+void startPawns(char *table[8][8], int ustart) {
+    for (int column = 0; column < 8; column++) {
+        table[column][1] = allocPiece(blackOrWhite(!ustart), 'P', convertColumnIntPosToChar(column), convertLineIntPosToChar(1), '0');
+        table[column][6] = allocPiece(blackOrWhite(ustart), 'P', convertColumnIntPosToChar(column), convertLineIntPosToChar(6), '0');
     }
-    else {
-        table[column][3] = allocPiece('K', convertColumnIntPosToChar(column), convertLineIntPosToChar(3), blackOrWhite(ustart), '0');
-        table[column][4] = allocPiece('Q', convertColumnIntPosToChar(column), convertLineIntPosToChar(4), blackOrWhite(ustart), '0');
-    }
-
-    table[column][5] = allocPiece('B', convertColumnIntPosToChar(column), convertLineIntPosToChar(5), blackOrWhite(ustart), '0');
-    table[column][6] = allocPiece('N', convertColumnIntPosToChar(column), convertLineIntPosToChar(6), blackOrWhite(ustart), '0');
-    table[column][7] = allocPiece('R', convertColumnIntPosToChar(column), convertLineIntPosToChar(7), blackOrWhite(ustart), '0');
 }
 
-void startPawns(char *table[8][8], int ustart) {
-    for (int line = 0; line < 8; line++) {
-        table[0][line] = allocPiece('P', convertColumnIntPosToChar(0), convertLineIntPosToChar(line), blackOrWhite(!ustart), '0');
-        table[7][line] = allocPiece('P', convertColumnIntPosToChar(7), convertLineIntPosToChar(line), blackOrWhite(ustart), '0');
+void startPieces(char *table[8][8], char color, int line, int ustart) {
+    startPawns(table, ustart);
+
+    table[0][line] = allocPiece(color, 'R', convertColumnIntPosToChar(0), convertLineIntPosToChar(line), '0');
+    table[1][line] = allocPiece(color, 'N', convertColumnIntPosToChar(1), convertLineIntPosToChar(line), '0');
+    table[2][line] = allocPiece(color, 'B', convertColumnIntPosToChar(2), convertLineIntPosToChar(line), '0');
+
+    if (!ustart) {
+        table[3][line] = allocPiece(color, 'K', convertColumnIntPosToChar(3), convertLineIntPosToChar(line), '0');
+        table[4][line] = allocPiece(color, 'Q', convertColumnIntPosToChar(4), convertLineIntPosToChar(line), '0');
+    } else {
+        table[3][line] = allocPiece(color, 'Q', convertColumnIntPosToChar(3), convertLineIntPosToChar(line), '0');
+        table[4][line] = allocPiece(color, 'K', convertColumnIntPosToChar(4), convertLineIntPosToChar(line), '0');
     }
+
+    table[5][line] = allocPiece(color, 'B', convertColumnIntPosToChar(5), convertLineIntPosToChar(line), '0');
+    table[6][line] = allocPiece(color, 'N', convertColumnIntPosToChar(6), convertLineIntPosToChar(line), '0');
+    table[7][line] = allocPiece(color, 'R', convertColumnIntPosToChar(7), convertLineIntPosToChar(line), '0');
 }

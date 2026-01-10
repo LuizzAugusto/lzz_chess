@@ -38,18 +38,18 @@ void showTable(int square_area, Color color) {
 	}
 }
 
-Color adaptColorPiece(char *piece) {
-	if (piece[3] == 'b') {
-		return DARKGRAY;
-	}
+// Color drawColorPiece(char color) {
+// 	if (color == 'b') {
+// 		return DARKGRAY;
+// 	}
 
-	if (piece[3] == 'w') {
-		return WHITE;
-	}
+// 	if (color == 'w') {
+// 		return WHITE;
+// 	}
 
-	printf("graphic error, not a valid color piece.\n");
-	return RED;
-}
+// 	printf("graphic error, not a valid color piece.\n");
+// 	return RED;
+// }
 
 Texture2D getPieceTexture(char piece_color, char piece_name) {
 	Texture2D texture;
@@ -113,7 +113,7 @@ void drawPiece(char *piece, int line, int col, int square_area) {
 		double spacing = 0.05;
 		Texture2D texture = getPieceTexture(piece_color, piece_name);
 
-		DrawTexture(texture, line * square_area + square_area * spacing, col * square_area + square_area * spacing, LIGHTGRAY);
+		DrawTexture(texture, col * square_area + square_area * spacing, line * square_area + square_area * spacing, LIGHTGRAY);
 	}
 }
 

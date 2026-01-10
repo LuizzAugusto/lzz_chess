@@ -18,15 +18,20 @@ int main() {
     Color colorSquare = BROWN;
     // PiecesTexture piecesTexture;
 
-    for (int line = 0; line < 8; line++) {
+    for (int line = 2; line < 6; line++) {
         for (int col = 0; col < 8; col++) {
             table[col][line] = '\0';
         }
     }
 
-    startPawns(table, ustart);
-    startPieces(table, 1, !ustart);
-    startPieces(table, 6, ustart);
+    char adversaryColor = ustart ? 'b' : 'w';
+    char myColor = ustart ? 'w' : 'b';
+
+    printf("-----------------------------------------\n");
+    printf("ustart: %d\n", ustart);
+    printf("-----------------------------------------\n");
+    startPieces(table, adversaryColor, 0, ustart);
+    startPieces(table, myColor, 7, ustart);
     
     InitWindow(square_area * 8, square_area * 8, "Chess");
 
