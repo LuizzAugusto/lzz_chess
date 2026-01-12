@@ -1,9 +1,9 @@
 #include "internals.h"
 
-typedef struct PieceMdt	PieceMdt;
+typedef struct PieceMedata	PieceMedata;
 typedef struct Piece	Piece;
 
-struct PieceMdt {
+struct PieceMedata {
 	char		color;
     char		name;
     Texture2D	texture;
@@ -14,13 +14,13 @@ struct Piece {
     int			line;
     bool		moved;
     bool		you;
-    PieceMdt*	metadata;
+    PieceMedata*	metadata;
 };
 
 enum { IDX_BLACK, IDX_WHITE };
 enum { IDX_BISHOP, IDX_KING, IDX_KNIGHT, IDX_PAWN, IDX_QUEEN, IDX_ROOK };
 
-extern PieceMdt* piecesMetadata[2][6];
+extern PieceMedata* piecesMetadata[2][6];
 
 int youStart(int confirm);
 
@@ -38,9 +38,9 @@ bool nameVerification(char name);
 
 bool colorVerification(char color);
 
-void allocPieceMetadata(PieceMdt** metadata, char color, char name, const char* texture_path);
+void allocPieceMetadata(PieceMedata** metadata, char color, char name, const char* texture_path);
 
-PieceMdt* pieceMetadaDispatch(char color, char name);
+PieceMedata* pieceMetadaDispatch(char color, char name);
 
 Piece* createPiece(char color, char name, int column, int line, bool is_you);
 

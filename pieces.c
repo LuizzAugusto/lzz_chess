@@ -3,7 +3,7 @@
 
 #include "internals.h"
 
-PieceMdt* piecesMetadata[2][6];
+PieceMedata* piecesMetadata[2][6];
 
 int youStart(int confirm) {
     if (confirm < 0) {
@@ -46,14 +46,14 @@ bool colorAssert(char color) {
     return assert;
 }
 
-void allocPieceMetadata(PieceMdt** metadata, char color, char name, const char* texture_path) {
-    *metadata = malloc(sizeof(PieceMdt));
+void allocPieceMetadata(PieceMedata** metadata, char color, char name, const char* texture_path) {
+    *metadata = malloc(sizeof(PieceMedata));
     (*metadata)->color = color;
     (*metadata)->name = name;
     (*metadata)->texture = LoadTexture(texture_path);
 }
 
-PieceMdt* pieceMetadaDispatch(char color, char name) {
+PieceMedata* pieceMetadaDispatch(char color, char name) {
     if (!colorAssert(color)) {
         return NULL;
     }
@@ -75,7 +75,7 @@ PieceMdt* pieceMetadaDispatch(char color, char name) {
             return NULL;
     }
 
-    PieceMdt* metadata = piecesMetadata[color_index][name_index];
+    PieceMedata* metadata = piecesMetadata[color_index][name_index];
 
     if (metadata == NULL) {
         char texture_path[24];
@@ -97,7 +97,7 @@ Piece* createPiece(char color, char name, int column, int line, bool is_you) {
         return NULL;
     }
     
-    PieceMdt* metadata = pieceMetadaDispatch(color, name);
+    PieceMedata* metadata = pieceMetadaDispatch(color, name);
 
     if (!metadata) {
         printf("can't load metadata.\n");
