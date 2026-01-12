@@ -3,16 +3,7 @@
 
 #include "internals.h"
 
-PieceMdt* piecesMetadata[2][6];
-
-int youStart(int confirm) {
-    if (confirm < 0) {
-        srandom(time(NULL));
-        return rand() % 2;
-    }
-
-    return confirm;
-}
+PieceMetadata* piecesMetadata[2][6];
 
 char getColorPiece(bool is_white) {
     if (is_white) {
@@ -46,14 +37,14 @@ bool colorAssert(char color) {
     return assert;
 }
 
-void allocPieceMetadata(PieceMdt** metadata, char color, char name, const char* texture_path) {
-    *metadata = malloc(sizeof(PieceMdt));
+void allocPieceMetadata(PieceMetadata** metadata, char color, char name, const char* texture_path) {
+    *metadata = malloc(sizeof(PieceMetadata));
     (*metadata)->color = color;
     (*metadata)->name = name;
     (*metadata)->texture = LoadTexture(texture_path);
 }
 
-PieceMdt* pieceMetadaDispatch(char color, char name) {
+PieceMetadata* pieceMetadaDispatch(char color, char name) {
     if (!colorAssert(color)) {
         return NULL;
     }
@@ -75,7 +66,7 @@ PieceMdt* pieceMetadaDispatch(char color, char name) {
             return NULL;
     }
 
-    PieceMdt* metadata = piecesMetadata[color_index][name_index];
+    PieceMetadata* metadata = piecesMetadata[color_index][name_index];
 
     if (metadata == NULL) {
         char texture_path[24];
@@ -86,7 +77,7 @@ PieceMdt* pieceMetadaDispatch(char color, char name) {
     return metadata;
 }
 
-Piece* createPiece(char color, char name, int column, int line, bool is_you) {
+Piece* createPiece(char color, char name, int column, int line) {
     if (column < 0 || column > 7) {
         printf("alloc error, invalid column space, use 'a' to 'h' only.\n");
         return NULL;
@@ -97,55 +88,55 @@ Piece* createPiece(char color, char name, int column, int line, bool is_you) {
         return NULL;
     }
     
-    PieceMdt* metadata = pieceMetadaDispatch(color, name);
+    PieceMetadata* metadata = pieceMetadaDispatch(color, name);
 
     if (!metadata) {
         printf("can't load metadata.\n");
         return NULL;
     }
 
-    Piece* piece = malloc(sizeof(piece));
+    Piece* piece = malloc(sizeof(Piece));
     piece->metadata = metadata;
     piece->column = column;
     piece->line = line;
     piece->moved = false;
-    piece->you = is_you;
+    piece->you = you_start;
 
     return piece;
 }
 
-void startPawns(Piece* board[8][8], bool is_you) {
+void startPawns() {
     for (int column = 0; column < 8; column++) {
-        board[column][1] = createPiece(getColorPiece(!is_you),	'P', column, 1, !is_you);
-        board[column][6] = createPiece(getColorPiece(is_you),	'P', column, 6, is_you);
+        board[column][1] = createPiece(getColorPiece(!*you_start),	'P', column, 1);
+        board[column][6] = createPiece(getColorPiece(*you_start),	'P', column, 6);
     }
 }
 
 // line 0 or 7
-void startPiecesFromLine(Piece* board[8][8], int line, int ustart) {
-    bool is_white = ustart && line == 7 || !ustart && line == 0;
+void startPiecesFromLine(int line) {
+    bool is_white = *you_start ^ line == 0;
 
-    board[0][line] = createPiece(getColorPiece(is_white), 'R', 0, line, is_white);
-    board[1][line] = createPiece(getColorPiece(is_white), 'N', 1, line, is_white);
-    board[2][line] = createPiece(getColorPiece(is_white), 'B', 2, line, is_white);
+    board[0][line] = createPiece(getColorPiece(is_white), 'R', 0, line);
+    board[1][line] = createPiece(getColorPiece(is_white), 'N', 1, line);
+    board[2][line] = createPiece(getColorPiece(is_white), 'B', 2, line);
 
-    if (!ustart) {
-        board[3][line] = createPiece(getColorPiece(is_white), 'K', 3, line, is_white);
-        board[4][line] = createPiece(getColorPiece(is_white), 'Q', 4, line, is_white);
+    if (!*you_start) {
+        board[3][line] = createPiece(getColorPiece(is_white), 'K', 3, line);
+        board[4][line] = createPiece(getColorPiece(is_white), 'Q', 4, line);
     } else {
-        board[3][line] = createPiece(getColorPiece(is_white), 'Q', 3, line, is_white);
-        board[4][line] = createPiece(getColorPiece(is_white), 'K', 4, line, is_white);
+        board[3][line] = createPiece(getColorPiece(is_white), 'Q', 3, line);
+        board[4][line] = createPiece(getColorPiece(is_white), 'K', 4, line);
     }
 
-    board[5][line] = createPiece(getColorPiece(is_white), 'B', 5, line, is_white);
-    board[6][line] = createPiece(getColorPiece(is_white), 'N', 6, line, is_white);
-    board[7][line] = createPiece(getColorPiece(is_white), 'R', 7, line, is_white);
+    board[5][line] = createPiece(getColorPiece(is_white), 'B', 5, line);
+    board[6][line] = createPiece(getColorPiece(is_white), 'N', 6, line);
+    board[7][line] = createPiece(getColorPiece(is_white), 'R', 7, line);
 }
 
-void startPieces(Piece* board[8][8], int ustart) {
-    startPiecesFromLine(board, 0, ustart);
-    startPawns(board, ustart);
-    startPiecesFromLine(board, 7, ustart);
+void startPieces() {
+    startPiecesFromLine(0);
+    startPawns();
+    startPiecesFromLine(7);
 }
 
 #endif

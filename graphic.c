@@ -33,7 +33,7 @@ void drawPiece(Piece* piece, int square_area) {
 	);
 }
 
-void showPieces(Piece* board[8][8], int square_area) {
+void showPieces(int square_area) {
 	for (int col = 0; col < 8; col++) {
 		for (int line = 0; line < 8; line++) {
 			Piece* piece = board[col][line];
