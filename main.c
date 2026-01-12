@@ -30,8 +30,8 @@ int main() {
     while (!WindowShouldClose())
     {
         BeginDrawing();
-		    ClearBackground(CLR_LIGHT_SQUARE);
-            showTable(square_area, CLR_DARK_SQUARE);
+		    ClearBackground(CLR_DARK_SQUARE);
+            showTable(square_area, CLR_LIGHT_SQUARE);
             showPieces(board, square_area);
         EndDrawing();
     }
