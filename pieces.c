@@ -3,20 +3,7 @@
 
 #include "internals.h"
 
-// black pieces
-PieceMdt* bBishopMd = NULL;
-PieceMdt* bKingMd = NULL;
-PieceMdt* bKnightMd = NULL;
-PieceMdt* bPawnMd = NULL;
-PieceMdt* bQueenMd = NULL;
-PieceMdt* bRookMd = NULL;
-// white pieces
-PieceMdt* wBishopMd = NULL;
-PieceMdt* wKingMd = NULL;
-PieceMdt* wKnightMd = NULL;
-PieceMdt* wPawnMd = NULL;
-PieceMdt* wQueenMd = NULL;
-PieceMdt* wRookMd = NULL;
+PieceMdt* piecesMetadata[2][6];
 
 int youStart(int confirm) {
     if (confirm < 0) {
@@ -71,58 +58,29 @@ PieceMdt* pieceMetadaDispatch(char color, char name) {
         return NULL;
     }
 
-    PieceMdt* metadata;
+    int color_index;
+    int name_index;
 
-    if (color == 'b') {
-        switch (name) {
-            case 'B':
-                metadata = bBishopMd;
-                break;
-            case 'K':
-                metadata = bKingMd;
-                break;
-            case 'N':
-                metadata = bKnightMd;
-                break;
-            case 'P':
-                metadata = bPawnMd;
-                break;
-            case 'Q':
-                metadata = bQueenMd;
-                break;
-            case 'R':
-                metadata = bRookMd;
-                break;
-            default:
-                metadata = NULL;
-                nameVerificationMsg();
-                break;
-        }
-    } else {
-        switch (name) {
-            case 'B':
-                metadata = wBishopMd;
-                break;
-            case 'K':
-                metadata = wKingMd;
-                break;
-            case 'N':
-                metadata = wKnightMd;
-                break;
-            case 'P':
-                metadata = wPawnMd;
-                break;
-            case 'Q':
-                metadata = wQueenMd;
-                break;
-            case 'R':
-                metadata = wRookMd;
-                break;
-            default:
-                metadata = NULL;
-                nameVerificationMsg();
-                break;
-        }
+    color_index = color == 'b' ? IDX_BLACK : IDX_WHITE;
+
+    switch (name) {
+        case 'B': name_index = IDX_BISHOP; break;
+        case 'K': name_index = IDX_KING;   break;
+        case 'N': name_index = IDX_KNIGHT; break;
+        case 'P': name_index = IDX_PAWN;   break;
+        case 'Q': name_index = IDX_QUEEN;  break;
+        case 'R': name_index = IDX_ROOK;   break;
+        default:
+            nameVerificationMsg();
+            return NULL;
+    }
+
+    PieceMdt* metadata = piecesMetadata[color_index][name_index];
+
+    if (metadata == NULL) {
+        char texture_path[24];
+        sprintf(texture_path, "assets/pixel/png/%c%c.png", color, name);
+        allocPieceMetadata(&metadata, color, name, texture_path);
     }
 
     return metadata;

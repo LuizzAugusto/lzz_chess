@@ -17,20 +17,10 @@ struct Piece {
     PieceMdt*	metadata;
 };
 
-// black pieces
-extern PieceMdt* bBishopMd;
-extern PieceMdt* bKingMd;
-extern PieceMdt* bKnightMd;
-extern PieceMdt* bPawnMd;
-extern PieceMdt* bQueenMd;
-extern PieceMdt* bRookMd;
-// white pieces
-extern PieceMdt* wBishopMd;
-extern PieceMdt* wKingMd;
-extern PieceMdt* wKnightMd;
-extern PieceMdt* wPawnMd;
-extern PieceMdt* wQueenMd;
-extern PieceMdt* wRookMd;
+enum { IDX_BLACK, IDX_WHITE };
+enum { IDX_BISHOP, IDX_KING, IDX_KNIGHT, IDX_PAWN, IDX_QUEEN, IDX_ROOK };
+
+extern PieceMdt* piecesMetadata[2][6];
 
 int youStart(int confirm);
 
