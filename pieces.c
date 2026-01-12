@@ -53,7 +53,7 @@ void allocPieceMetadata(PieceMedata** metadata, char color, char name, const cha
     (*metadata)->texture = LoadTexture(texture_path);
 }
 
-PieceMedata* pieceMetadaDispatch(char color, char name) {
+PieceMedata* getPieceMetada(char color, char name) {
     if (!colorAssert(color)) {
         return NULL;
     }
