@@ -1,23 +1,28 @@
 #include "internals.h"
 
-struct PieceMetadata {
-	char      color;
-    char      name;
-    Texture2D texture;
+typedef struct PieceMdt	PieceMdt;
+typedef struct Piece	Piece;
+
+struct PieceMdt {
+	char		color;
+    char		name;
+    Texture2D	texture;
 };
 
 struct Piece {
-    int            column;
-    int            line;
-    bool           moved;
-    bool*          you;
-    PieceMetadata* metadata;
+    int			column;
+    int			line;
+    bool		moved;
+    bool		you;
+    PieceMdt*	metadata;
 };
 
 enum { IDX_BLACK, IDX_WHITE };
 enum { IDX_BISHOP, IDX_KING, IDX_KNIGHT, IDX_PAWN, IDX_QUEEN, IDX_ROOK };
 
-extern PieceMetadata* piecesMetadata[2][6];
+extern PieceMdt* piecesMetadata[2][6];
+
+int youStart(int confirm);
 
 char getColorPiece(bool is_you);
 
@@ -33,14 +38,14 @@ bool nameVerification(char name);
 
 bool colorVerification(char color);
 
-void allocPieceMetadata(PieceMetadata** metadata, char color, char name, const char* texture_path);
+void allocPieceMetadata(PieceMdt** metadata, char color, char name, const char* texture_path);
 
-PieceMetadata* pieceMetadaDispatch(char color, char name);
+PieceMdt* pieceMetadaDispatch(char color, char name);
 
-Piece* createPiece(char color, char name, int column, int line);
+Piece* createPiece(char color, char name, int column, int line, bool is_you);
 
-void startPawns();
+void startPawns(Piece* board[8][8], bool is_you);
 
-void startPiecesFromLine(int line);
+void startPiecesFromLine(Piece* board[8][8], int line, int ustart);
 
-void startPieces();
+void startPieces(Piece* board[8][8], int ustart);

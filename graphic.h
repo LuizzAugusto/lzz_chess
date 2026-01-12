@@ -7,4 +7,4 @@ void showTable(int square_area, Color color);
 
 void drawPiece(Piece* piece, int square_area);
 
-void showPieces(int square_area);
+void showPieces(Piece* board[8][8], int square_area);
