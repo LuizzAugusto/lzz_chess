@@ -1,21 +1,18 @@
 #include "internals.h"
 
-typedef struct PieceMedata	PieceMedata;
-typedef struct Piece	Piece;
+typedef struct PieceMedata {
+	char      color;
+    char      name;
+    Texture2D texture;
+} PieceMedata;
 
-struct PieceMedata {
-	char		color;
-    char		name;
-    Texture2D	texture;
-};
-
-struct Piece {
-    int			column;
-    int			line;
-    bool		moved;
-    bool		you;
-    PieceMedata*	metadata;
-};
+typedef struct Piece {
+    int          column;
+    int	         line;
+    bool         moved;
+    bool         you;
+    PieceMedata* metadata;
+} Piece;
 
 enum { IDX_BLACK, IDX_WHITE };
 enum { IDX_BISHOP, IDX_KING, IDX_KNIGHT, IDX_PAWN, IDX_QUEEN, IDX_ROOK };
