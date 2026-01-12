@@ -97,7 +97,7 @@ Piece* createPiece(char color, char name, int column, int line, bool is_you) {
         return NULL;
     }
     
-    PieceMedata* metadata = pieceMetadaDispatch(color, name);
+    PieceMedata* metadata = getPieceMetada(color, name);
 
     if (!metadata) {
         printf("can't load metadata.\n");
