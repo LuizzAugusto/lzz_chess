@@ -12,8 +12,9 @@ Lila pixel assets is under AGPLv3+ License.
 
 ### Build
 mkdir -p build && \
-cc main.c -o build/chess \
--I/usr/local/include -L/usr/local/lib -lraylib && \
+cc main.c pieces.c graphic.c \
+ -o build/chess \
+-lraylib && \
 build/chess
 
 ### License

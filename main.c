@@ -1,8 +1,5 @@
 #include "internals.h"
 
-#include "pieces.c"
-#include "graphic.c"
-
 // typedef struct Historic Historic;
 
 // struct Historic {
