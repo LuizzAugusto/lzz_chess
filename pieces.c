@@ -1,44 +1,22 @@
-#include "internals.c"
+#ifndef __CHESS_G_PIECES__
+#define __CHESS_G_PIECES__
 
-// For explanation: it didn't use structs, because I want to save historic
-// in chess-like style and struct will lead for more convertions.
-char *allocPiece(char color, char name, char col, char line, char moved) {
-    if (color != 'b' && color != 'w') {
-        printf("alloc error, trying allocate an unexistent color, use 'b' for black and 'w' for white.\n");
-        return NULL;
-    }
+#include "internals.h"
 
-    if (name != 'K' && name != 'Q' && name != 'R' && name != 'N' && name != 'B' && name != 'P') {
-        printf("alloc error, trying allocate an unexistent piece, use 'K' for King, 'Q' for Queen, 'R' for Rook, 'N' for Knight, 'B' for Bishop and 'P' for Pawn.\n");
-        return NULL;
-    }
-
-    if (col < 'a' || col > 'h') {
-        printf("alloc error, invalid column space, use 'a' to 'h' only.\n");
-        return NULL;
-    }
-
-    if (line < '1' || line > '8') {
-        printf("alloc error, invalid line space, use '1' to '8' only.\n");
-        return NULL;
-    }
-
-    if (moved != '0' && moved != '1') {
-        printf("alloc error, use '1' for moved, or '0' for unmoved.\n");
-        return NULL;
-    }
-
-    char *piece = malloc(6);
-
-    piece[IDX_COLOR] = color;
-    piece[IDX_PIECE_NAME] = name;
-    piece[IDX_COLUMN] = col;
-    piece[IDX_LINE] = line;
-    piece[IDX_MOVED] = moved;
-    piece[5] = '\0';
-
-    return piece;
-}
+// black pieces
+PieceMdt* bBishopMd = NULL;
+PieceMdt* bKingMd = NULL;
+PieceMdt* bKnightMd = NULL;
+PieceMdt* bPawnMd = NULL;
+PieceMdt* bQueenMd = NULL;
+PieceMdt* bRookMd = NULL;
+// white pieces
+PieceMdt* wBishopMd = NULL;
+PieceMdt* wKingMd = NULL;
+PieceMdt* wKnightMd = NULL;
+PieceMdt* wPawnMd = NULL;
+PieceMdt* wQueenMd = NULL;
+PieceMdt* wRookMd = NULL;
 
 int youStart(int confirm) {
     if (confirm < 0) {
@@ -49,8 +27,8 @@ int youStart(int confirm) {
     return confirm;
 }
 
-char blackOrWhite(int ustart) {
-    if (ustart) {
+char getColorPiece(bool is_white) {
+    if (is_white) {
         return 'w';
     }
 
@@ -67,29 +45,149 @@ char convertLineIntPosToChar(int pos) {
     return pos + 49;
 }
 
-void startPawns(char *board[8][8], int ustart) {
+void nameVerificationMsg() {
+    printf("alloc error, trying allocate an unexistent piece, use 'K' for King, 'Q' for Queen, 'R' for Rook, 'N' for Knight, 'B' for Bishop and 'P' for Pawn.\n");
+}
+
+bool colorAssert(char color) {
+    bool assert = color == 'b' || color == 'w';
+    
+    if (!assert) {
+        printf("alloc error, trying allocate an unexistent color, use 'b' for black and 'w' for white.\n");
+    }
+
+    return assert;
+}
+
+void allocPieceMetadata(PieceMdt** metadata, char color, char name, const char* texture_path) {
+    *metadata = malloc(sizeof(PieceMdt));
+    (*metadata)->color = color;
+    (*metadata)->name = name;
+    (*metadata)->texture = LoadTexture(texture_path);
+}
+
+PieceMdt* pieceMetadaDispatch(char color, char name) {
+    if (!colorAssert(color)) {
+        return NULL;
+    }
+
+    PieceMdt* metadata;
+
+    if (color == 'b') {
+        switch (name) {
+            case 'B':
+                metadata = bBishopMd;
+                break;
+            case 'K':
+                metadata = bKingMd;
+                break;
+            case 'N':
+                metadata = bKnightMd;
+                break;
+            case 'P':
+                metadata = bPawnMd;
+                break;
+            case 'Q':
+                metadata = bQueenMd;
+                break;
+            case 'R':
+                metadata = bRookMd;
+                break;
+            default:
+                metadata = NULL;
+                nameVerificationMsg();
+                break;
+        }
+    } else {
+        switch (name) {
+            case 'B':
+                metadata = wBishopMd;
+                break;
+            case 'K':
+                metadata = wKingMd;
+                break;
+            case 'N':
+                metadata = wKnightMd;
+                break;
+            case 'P':
+                metadata = wPawnMd;
+                break;
+            case 'Q':
+                metadata = wQueenMd;
+                break;
+            case 'R':
+                metadata = wRookMd;
+                break;
+            default:
+                metadata = NULL;
+                nameVerificationMsg();
+                break;
+        }
+    }
+
+    return metadata;
+}
+
+Piece* createPiece(char color, char name, int column, int line, bool is_you) {
+    if (column < 0 || column > 7) {
+        printf("alloc error, invalid column space, use 'a' to 'h' only.\n");
+        return NULL;
+    }
+
+    if (line < 0 || line > 7) {
+        printf("alloc error, invalid line space, use '1' to '8' only.\n");
+        return NULL;
+    }
+    
+    PieceMdt* metadata = pieceMetadaDispatch(color, name);
+
+    if (!metadata) {
+        printf("can't load metadata.\n");
+        return NULL;
+    }
+
+    Piece* piece = malloc(sizeof(piece));
+    piece->metadata = metadata;
+    piece->column = column;
+    piece->line = line;
+    piece->moved = false;
+    piece->you = is_you;
+
+    return piece;
+}
+
+void startPawns(Piece* board[8][8], bool is_you) {
     for (int column = 0; column < 8; column++) {
-        board[column][1] = allocPiece(blackOrWhite(!ustart), 'P', convertColumnIntPosToChar(column), convertLineIntPosToChar(1), '0');
-        board[column][6] = allocPiece(blackOrWhite(ustart), 'P', convertColumnIntPosToChar(column), convertLineIntPosToChar(6), '0');
+        board[column][1] = createPiece(getColorPiece(!is_you),	'P', column, 1, !is_you);
+        board[column][6] = createPiece(getColorPiece(is_you),	'P', column, 6, is_you);
     }
 }
 
-void startPieces(char *board[8][8], char color, int line, int ustart) {
-    startPawns(board, ustart);
+// line 0 or 7
+void startPiecesFromLine(Piece* board[8][8], int line, int ustart) {
+    bool is_white = ustart && line == 7 || !ustart && line == 0;
 
-    board[0][line] = allocPiece(color, 'R', convertColumnIntPosToChar(0), convertLineIntPosToChar(line), '0');
-    board[1][line] = allocPiece(color, 'N', convertColumnIntPosToChar(1), convertLineIntPosToChar(line), '0');
-    board[2][line] = allocPiece(color, 'B', convertColumnIntPosToChar(2), convertLineIntPosToChar(line), '0');
+    board[0][line] = createPiece(getColorPiece(is_white), 'R', 0, line, is_white);
+    board[1][line] = createPiece(getColorPiece(is_white), 'N', 1, line, is_white);
+    board[2][line] = createPiece(getColorPiece(is_white), 'B', 2, line, is_white);
 
     if (!ustart) {
-        board[3][line] = allocPiece(color, 'K', convertColumnIntPosToChar(3), convertLineIntPosToChar(line), '0');
-        board[4][line] = allocPiece(color, 'Q', convertColumnIntPosToChar(4), convertLineIntPosToChar(line), '0');
+        board[3][line] = createPiece(getColorPiece(is_white), 'K', 3, line, is_white);
+        board[4][line] = createPiece(getColorPiece(is_white), 'Q', 4, line, is_white);
     } else {
-        board[3][line] = allocPiece(color, 'Q', convertColumnIntPosToChar(3), convertLineIntPosToChar(line), '0');
-        board[4][line] = allocPiece(color, 'K', convertColumnIntPosToChar(4), convertLineIntPosToChar(line), '0');
+        board[3][line] = createPiece(getColorPiece(is_white), 'Q', 3, line, is_white);
+        board[4][line] = createPiece(getColorPiece(is_white), 'K', 4, line, is_white);
     }
 
-    board[5][line] = allocPiece(color, 'B', convertColumnIntPosToChar(5), convertLineIntPosToChar(line), '0');
-    board[6][line] = allocPiece(color, 'N', convertColumnIntPosToChar(6), convertLineIntPosToChar(line), '0');
-    board[7][line] = allocPiece(color, 'R', convertColumnIntPosToChar(7), convertLineIntPosToChar(line), '0');
+    board[5][line] = createPiece(getColorPiece(is_white), 'B', 5, line, is_white);
+    board[6][line] = createPiece(getColorPiece(is_white), 'N', 6, line, is_white);
+    board[7][line] = createPiece(getColorPiece(is_white), 'R', 7, line, is_white);
 }
+
+void startPieces(Piece* board[8][8], int ustart) {
+    startPiecesFromLine(board, 0, ustart);
+    startPawns(board, ustart);
+    startPiecesFromLine(board, 7, ustart);
+}
+
+#endif
